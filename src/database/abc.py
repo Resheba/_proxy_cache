@@ -1,8 +1,11 @@
 from pydantic import BaseModel
 from typing import Any, Sequence, Type
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Delete, Result, Select, delete, select, inspect, text
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import Delete, Result, Select, delete, select, inspect, text
+
+from src.core import BaseHTTPException
 
 
 class Repository:
@@ -15,10 +18,13 @@ class Repository:
     async def create(self, 
                      data: Type[BaseModel]
                      ) -> Any:
-        obj = self.orm_model(**data.model_dump(exclude_unset=True))
-        self.session.add(obj)
-        await self.session.commit()
-        return obj
+        try:
+            obj = self.orm_model(**data.model_dump(exclude_unset=True))
+            self.session.add(obj)
+            await self.session.commit()
+            return obj
+        except SQLAlchemyError as ex:
+            raise BaseHTTPException(status_code=409, msg=ex._message())
     
     async def get(self,
                   many: bool = True,
