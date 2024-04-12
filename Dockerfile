@@ -1,0 +1,4 @@
+FROM postgres:15.6
+
+ENV POSTGRES_PASSWORD=postgres
+ENV TZ='Europe/Moscow'
