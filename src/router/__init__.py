@@ -1,2 +1,2 @@
-from .parser import PaserRouter
+from .database import PaserRouter
 from .search import SearchRouter

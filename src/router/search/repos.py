@@ -1,3 +1,4 @@
+from typing import Iterable
 from sqlalchemy import Result, select, Select, Text, Row, Table, func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,7 +19,7 @@ class DataRepository:
                   offset: int,
                   limit: int,
                   **filter_by
-                  ) -> list[DataORM]:
+                  ) -> Iterable[DataORM]:
         try:
             table: Table = DataORM.table()
             stmt: Select = select(table).filter_by(**filter_by).offset(offset).limit(limit)
