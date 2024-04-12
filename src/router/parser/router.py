@@ -1,9 +1,6 @@
-from httpx import Response
-from pandas import DataFrame
 from fastapi import APIRouter, Request, BackgroundTasks
 
 from src.core import BaseResponse, ParserClient
-from src.config import Settings
 from .tasks import reset_db
 
 
@@ -11,7 +8,9 @@ router = APIRouter()
 
 
 @router.get("",
-            response_model=BaseResponse[None]
+            response_model=BaseResponse[None],
+            summary="Reset database",
+            response_model_exclude_none=True,
             )
 async def get(
     request: Request,
