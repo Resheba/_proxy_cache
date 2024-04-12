@@ -12,9 +12,12 @@ from src.core import (
     State
 )
 from src.router import PaserRouter
+from src.database import manager
 
 
 async def lifespan(app: FastAPI) -> AsyncIterator[State]:
+    await manager.connect(create_all=False, expire_on_commit=False)
+
     app.include_router(PaserRouter, prefix="/parser")
 
     client: ParserClient = ParserClient()

@@ -8,6 +8,7 @@ load_dotenv(override=True)
 class Settings:
     DB_DSN: Final[str] = os.getenv("DB_DSN")
     BASE_URL: Final[str] = os.getenv("BASE_URL")
+    DB_SYNC_DSN: Final[str] = os.getenv("DB_SYNC_DSN")
 
 
 if not all(value for key, value in Settings.__dict__.items() if not key.startswith("__")):

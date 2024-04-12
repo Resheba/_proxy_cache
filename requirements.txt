@@ -7,3 +7,4 @@ gunicorn
 python-multipart
 httpx
 python-dotenv
+pandas
