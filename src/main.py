@@ -5,9 +5,11 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from fastapi import FastAPI
 
 from src.core import BaseHTTPException, base_exception_handler
+from src.router import PaserRouter
 
 
 async def lifespan(app: FastAPI):
+    app.include_router(PaserRouter, prefix="/parser")
     print('Start')
     yield
     print('End')
