@@ -4,6 +4,7 @@ from pandas import DataFrame
 
 from src.core import ParserClient
 from src.config import Settings
+from src.database import manager
 
 
 async def reset_db(client: ParserClient) -> None:
@@ -11,4 +12,6 @@ async def reset_db(client: ParserClient) -> None:
     data: list[dict] = response.json()
     df: DataFrame = DataFrame(data)
     df.to_sql('data', con=Settings.DB_SYNC_DSN, if_exists='replace', index=False)
+    async with manager.get_session() as session:
+        await session.run_sync(lambda sess: manager.Base.metadata.reflect(sess.connection()))
     info('Database reset')
