@@ -4,6 +4,8 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 
 from fastapi import FastAPI
 
+from src.core import BaseHTTPException, base_exception_handler
+
 
 async def lifespan(app: FastAPI):
     print('Start')
@@ -13,7 +15,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="VacProxy",
-    lifespan=lifespan
+    lifespan=lifespan,
+    exception_handlers={
+        BaseHTTPException: base_exception_handler,
+    }
     )
 
 

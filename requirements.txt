@@ -1,6 +1,9 @@
 FastAPI
 SQLAlchemy
 asyncpg
+alchemynger
 uvicorn
 gunicorn
 python-multipart
+httpx
+python-dotenv
