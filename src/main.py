@@ -11,14 +11,13 @@ from src.core import (
     ParserClient,
     State
 )
-from src.config import Settings
 from src.router import PaserRouter
 
 
 async def lifespan(app: FastAPI) -> AsyncIterator[State]:
     app.include_router(PaserRouter, prefix="/parser")
 
-    client: ParserClient = ParserClient(base_url=Settings.BASE_URL)
+    client: ParserClient = ParserClient()
     print('Start')
     yield State(client=client)
     print('End')
