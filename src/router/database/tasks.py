@@ -13,5 +13,6 @@ async def reset_db(client: ParserClient) -> None:
     df: DataFrame = DataFrame(data)
     df.to_sql('data', con=Settings.DB_SYNC_DSN, if_exists='replace', index=False)
     async with manager.get_session() as session:
+        manager.Base.metadata.clear()
         await session.run_sync(lambda sess: manager.Base.metadata.reflect(sess.connection()))
     info('Database reset')
