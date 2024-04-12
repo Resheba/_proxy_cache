@@ -3,15 +3,24 @@ import os, sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 
 from fastapi import FastAPI
+from typing import AsyncIterator
 
-from src.core import BaseHTTPException, base_exception_handler
+from src.core import (
+    BaseHTTPException, 
+    base_exception_handler,
+    ParserClient,
+    State
+)
+from src.config import Settings
 from src.router import PaserRouter
 
 
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[State]:
     app.include_router(PaserRouter, prefix="/parser")
+
+    client: ParserClient = ParserClient(base_url=Settings.BASE_URL)
     print('Start')
-    yield
+    yield State(client=client)
     print('End')
 
 
