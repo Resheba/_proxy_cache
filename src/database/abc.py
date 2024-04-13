@@ -16,11 +16,15 @@ class Repository:
         self.session: AsyncSession = session
 
     async def create(self, 
-                     data: Type[BaseModel]
+                     data: BaseModel | Sequence[BaseModel]
                      ) -> Any:
         try:
-            obj = self.orm_model(**data.model_dump(exclude_unset=True))
-            self.session.add(obj)
+            if issubclass(type(data), Sequence):
+                obj = [self.orm_model(**dto.model_dump(exclude_unset=True)) for dto in data]
+                self.session.add_all(obj)
+            else:
+                obj = self.orm_model(**data.model_dump(exclude_unset=True))
+                self.session.add(obj)
             await self.session.commit()
             return obj
         except SQLAlchemyError as ex:
@@ -42,8 +46,11 @@ class Repository:
         return result.scalar_one_or_none()
     
     async def delete(self,
-                     pk_list: Sequence[Any]
+                     pk_list: Sequence[Any] | None = None
                      ) -> None:
-        stmt: Delete = delete(self.orm_model).where(inspect(self.orm_model).primary_key[0].in_(pk_list))
+        if pk_list:
+            stmt: Delete = delete(self.orm_model).where(inspect(self.orm_model).primary_key[0].in_(pk_list))
+        else:
+            stmt: Delete = delete(self.orm_model)
         await self.session.execute(stmt)
         await self.session.commit()    
