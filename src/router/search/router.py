@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Query, Depends, Request
+from fastapi import APIRouter, Query, Depends, Request, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core import BaseResponse, PaginatorPage
@@ -34,5 +34,31 @@ async def search(
         offset=(paginator.page_num - 1) * paginator.page_size, 
         limit=paginator.page_size,
         **params
+    )
+    return BaseResponse(data=data)
+
+
+@router.post("",
+    # response_model=BaseResponse[list[dict]],
+    summary="Search by form-data",
+    )
+async def search_by_form_data(
+    *,
+    request: Request,
+    query: Annotated[str, Form(alias='searching', validation_alias='searching')] = None,
+    clientid: Annotated[int, Form()] = None,
+    placeid: Annotated[int, Form()] = None,
+    profid: Annotated[int, Form()] = None,
+    session: Annotated[AsyncSession, Depends(SessionDepend)],
+    paginator: Annotated[PaginatorPage, Depends()]
+):
+    # forms = dict(await request.form())
+    all_filters: dict[str, int] = dict(clientid=clientid, placeid=placeid, profid=profid)
+    filters: dict[str, int] = {key: value for key, value in all_filters.items() if value is not None}
+    data: list = await DataRepository(session).get(
+        query=query,  
+        offset=(paginator.page_num - 1) * paginator.page_size, 
+        limit=paginator.page_size,
+        **filters,
     )
     return BaseResponse(data=data)
