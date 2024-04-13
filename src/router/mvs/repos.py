@@ -1,6 +1,6 @@
 from src.database.abc import ViewRepository
 
-from .models import ClientORM, WorkPlaceORM
+from .models import ClientORM, WorkPlaceORM, ProfessionORM
 from ..database.repos import ClientColumnRepository, WorkPlaceColumnRepository, ProfessionColumnRepository
 
 
@@ -15,6 +15,6 @@ class WorkPlaceRepository(ViewRepository):
 
 
 class ProfessionsRepository(ViewRepository):
-    orm_model = WorkPlaceORM 
+    orm_model = ProfessionORM 
     columns_repository = ProfessionColumnRepository
     

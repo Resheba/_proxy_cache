@@ -9,3 +9,8 @@ class ClientORM(MaterializedView):
 
 class WorkPlaceORM(MaterializedView):
     name = 'workplace'
+
+
+class ProfessionORM(MaterializedView):
+    name = 'profession'
+    
