@@ -26,13 +26,13 @@ async def get_clients(
     return BaseResponse(data=data)
 
 
-@router.patch("/clients",
-    response_model=BaseResponse[str],
-    response_model_exclude_none=True,
-)
-async def replace_clients(
-    # stmt: Annotated[str, Body()],
-    session: Annotated[AsyncSession, Depends(SessionDepend)],
-):
-    stmt: str = await ClientsRepository(session).replace()
-    return BaseResponse(data=stmt)
+# @router.patch("/clients",
+#     response_model=BaseResponse[str],
+#     response_model_exclude_none=True,
+# )
+# async def replace_clients(
+#     # stmt: Annotated[str, Body()],
+#     session: Annotated[AsyncSession, Depends(SessionDepend)],
+# ):
+#     stmt: str = await ClientsRepository(session).replace()
+#     return BaseResponse(data=stmt)

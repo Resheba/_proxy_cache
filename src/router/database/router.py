@@ -9,13 +9,13 @@ from .repos import ClientColumnRepository, ProfessionColumnRepository, WorkPlace
 from .schemas import ColumnReturn
 from .tasks import reset_db
 
-from ..mvs.repos import ClientsRepository
+from ..mvs.repos import ClientsRepository, WorkPlaceRepository
 
 
 router = APIRouter()
 
 
-@router.get("/reset",
+@router.patch("/reset",
             response_model=BaseResponse[None],
             summary="Reset database",
             response_model_exclude_none=True,
@@ -37,7 +37,7 @@ async def get(
 async def get_client_columns(
     session: Annotated[AsyncSession, Depends(SessionDepend)],
 ):
-    columns: list = await ClientColumnRepository(session).get(only_columns=['column_name'])
+    columns: list[str] = await ClientColumnRepository(session).get(only_columns=['column_name'])
     return BaseResponse(data=columns)
 
 
@@ -54,34 +54,38 @@ async def create_client_columns(
     await repo.delete()
     columns: list = await repo.create([ColumnReturn(column_name=column_name) for column_name in column_names])
     await ClientsRepository(session).replace()
-    
+
     return BaseResponse(data=[column.column_name for column in columns])
 
 
-# @router.delete("/client-columns",
-#             response_model=BaseResponse[None],
-#             summary="Delete client columns",
-#             response_model_exclude_none=True,
-#             )
-# async def delete_client_columns(
-#     ids: Annotated[list[int], Query(alias='id')],
-#     session: Annotated[AsyncSession, Depends(SessionDepend)],
-# ):
-#     await ClientColumnRepository(session).delete(ids)
-#     await ClientsRepository(session).replace()
-#     return BaseResponse(data=None)
+
+@router.get("/workplace-columns",
+            response_model=BaseResponse[list[str]],
+            summary="Get workplace columns",
+            response_model_exclude_none=True,
+            )
+async def get_workplace_columns(
+    session: Annotated[AsyncSession, Depends(SessionDepend)],
+):
+    columns: list[str] = await WorkPlaceColumnRepository(session).get(only_columns=['column_name'])
+    return BaseResponse(data=columns)
 
 
-# @router.get("/workplace-columns",
-#             response_model=BaseResponse[list[ColumnReturn]],
-#             summary="Get workplace columns",
-#             response_model_exclude_none=True,
-#             )
-# async def get_workplace_columns(
-#     session: Annotated[AsyncSession, Depends(SessionDepend)],
-# ):
-#     columns: list = await WorkPlaceColumnRepository(session).get()
-#     return BaseResponse(data=columns)
+@router.patch("/workplace-columns",
+            response_model=BaseResponse[list[str]],
+            summary="Create workplace columns",
+            response_model_exclude_none=True,
+            )
+async def create_workplace_columns(
+    column_names: Annotated[list[str], Body(min_length=1, embed=True)],
+    session: Annotated[AsyncSession, Depends(SessionDepend)],
+):
+    repo: WorkPlaceColumnRepository = WorkPlaceColumnRepository(session)
+    await repo.delete()
+    columns: list = await repo.create([ColumnReturn(column_name=column_name) for column_name in column_names])
+    await WorkPlaceRepository(session).replace()
+
+    return BaseResponse(data=[column.column_name for column in columns])
 
 
 # @router.post("/workplace-columns",
