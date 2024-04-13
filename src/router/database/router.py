@@ -1,6 +1,6 @@
 from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Body, Request, BackgroundTasks, Depends, Query
+from fastapi import APIRouter, Body, Request, BackgroundTasks, Depends, File
 
 from src.core import BaseResponse, ParserClient
 from src.database import SessionDepend
@@ -22,11 +22,13 @@ router = APIRouter()
             response_model_exclude_none=True,
             )
 async def get(
+    *,
     request: Request,
+    file: Annotated[bytes, File()] = None,
     background_tasks: BackgroundTasks,
 ):
     client: ParserClient = request.state.client
-    background_tasks.add_task(reset_db, client)
+    background_tasks.add_task(reset_db, client, file)
     return BaseResponse(data=None)
 
 

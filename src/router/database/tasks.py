@@ -1,4 +1,5 @@
 import json
+from fastapi import File
 from sqlalchemy import text
 from httpx import Response
 from pandas import DataFrame
@@ -10,14 +11,21 @@ from src.database import manager
 from .models import ClientColumnORM, ProfessionColumnORM, WorkPlaceColumnORM
 
 
-async def reset_db(client: ParserClient) -> None:
-    response: Response | None = await client.get_data(url=Settings.BASE_URL)
-    if response is None:
-        with open('data.json', encoding='utf-8') as file:
-            data = json.load(file)
-    else:
-        data: list[dict] = response.json()
+async def reset_db(client: ParserClient, file: bytes) -> None:
+    # response: Response | None = await client.get_data(url=Settings.BASE_URL)
+    # if response is None:
+    #     with open('data.json', encoding='utf-8') as file:
+    #         data = json.load(file)
+    # else:
+    #     data: list[dict] = response.json()
 
+    if file is not None:
+        data = json.loads(file.decode('utf-8'))
+    elif response := await client.get_data(url=Settings.BASE_URL):
+        data = response.json()
+    else:
+        logger.warn('No data found')
+        return
 
     df: DataFrame = DataFrame(data)
     async with manager.get_session() as session:
