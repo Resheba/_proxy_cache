@@ -1,6 +1,7 @@
 FastAPI
 SQLAlchemy
 asyncpg
+psycopg2-binary
 alchemynger
 uvicorn
 gunicorn

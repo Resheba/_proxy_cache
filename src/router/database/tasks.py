@@ -1,7 +1,5 @@
 import json
-from fastapi import File
 from sqlalchemy import text
-from httpx import Response
 from pandas import DataFrame
 
 from src.core import ParserClient, logger
@@ -11,7 +9,7 @@ from src.database import manager
 from .models import ClientColumnORM, ProfessionColumnORM, WorkPlaceColumnORM
 
 
-async def reset_db(client: ParserClient, file: bytes) -> None:
+async def reset_db(client: ParserClient, file: bytes | None = None) -> None:
     # response: Response | None = await client.get_data(url=Settings.BASE_URL)
     # if response is None:
     #     with open('data.json', encoding='utf-8') as file:
