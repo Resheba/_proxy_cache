@@ -11,11 +11,13 @@ from .models import ClientColumnORM, ProfessionColumnORM, WorkPlaceColumnORM
 
 
 async def reset_db(client: ParserClient) -> None:
-    # response: Response = await client.get_data(url=Settings.BASE_URL)
-    # data: list[dict] = response.json()
+    response: Response | None = await client.get_data(url=Settings.BASE_URL)
+    if response is None:
+        with open('data.json', encoding='utf-8') as file:
+            data = json.load(file)
+    else:
+        data: list[dict] = response.json()
 
-    with open('data.json', encoding='utf-8') as file:
-        data = json.load(file)
 
     df: DataFrame = DataFrame(data)
     async with manager.get_session() as session:

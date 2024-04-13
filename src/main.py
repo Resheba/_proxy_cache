@@ -29,9 +29,6 @@ async def lifespan(app: FastAPI) -> AsyncIterator[State]:
         from src.router.database.models import WorkPlaceColumnORM, ClientColumnORM, ProfessionColumnORM
         await session.run_sync(lambda sess: manager.Base.metadata.create_all(sess.connection()))
 
-        # from src.router.mvs.models import ClientORM
-        # if not ClientsORM.actual(manager.Base.metadata):
-        # await session.execute(ClientORM())
         await session.commit()
     
     from src.router import PaserRouter, SearchRouter, MvsRouter
