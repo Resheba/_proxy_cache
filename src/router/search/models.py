@@ -5,9 +5,9 @@ from src.database import manager
 
 class DataORM(manager.Base):
     __abstract__ = True
+    name: str = 'data'
 
-    @staticmethod
-    def table():
-        data_table: Table = Table('data', manager.Base.metadata)
-        return data_table
+    @classmethod
+    def table(cls) -> Table: 
+        return Table(cls.name, manager.Base.metadata)
     

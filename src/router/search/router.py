@@ -29,7 +29,6 @@ async def search(
     paginator: Annotated[PaginatorPage, Depends()]
 ):
     params = {param: value for param, value in request.query_params.items() if param not in ('query', 'page_size', 'page_num')}
-    print(params)
     data: list = await DataRepository(session).get(
         query=query, 
         offset=(paginator.page_num - 1) * paginator.page_size, 

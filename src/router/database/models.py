@@ -1,6 +1,5 @@
-from sqlalchemy import Select, select, Column, Integer, String
+from sqlalchemy import Select, select, Column, Integer, String, text
 
-from src.database._view import MaterializedView
 from src.database import manager
 
 
@@ -26,8 +25,3 @@ class ProfessionColumnORM(manager.Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     column_name = Column(String, nullable=False, unique=True)
-
-
-# class ClientsORM(MaterializedView):
-#     name = 'client'
-#     selectable = select([MaterializedView.table.columns.client_id])

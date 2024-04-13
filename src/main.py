@@ -16,18 +16,29 @@ from src.database import manager
 
 async def lifespan(app: FastAPI) -> AsyncIterator[State]:
     await manager.connect(create_all=False, expire_on_commit=False)
+    client: ParserClient = ParserClient()
+
     async with manager.get_session() as session:
-        await session.run_sync(lambda sess: manager.Base.metadata.reflect(sess.connection()))
+        await session.run_sync(lambda sess: manager.Base.metadata.reflect(sess.connection(), views=True))
+
+        from src.router.search.models import DataORM
+        if DataORM.name not in manager.Base.metadata.tables:
+            from src.router.database.tasks import reset_db
+            await reset_db(client=client)
 
         from src.router.database.models import WorkPlaceColumnORM, ClientColumnORM, ProfessionColumnORM
         await session.run_sync(lambda sess: manager.Base.metadata.create_all(sess.connection()))
+
+        # from src.router.mvs.models import ClientORM
+        # if not ClientsORM.actual(manager.Base.metadata):
+        # await session.execute(ClientORM())
         await session.commit()
     
-    from src.router import PaserRouter, SearchRouter
+    from src.router import PaserRouter, SearchRouter, MvsRouter
     app.include_router(PaserRouter, prefix="/data", tags=["Database"])
+    app.include_router(MvsRouter, prefix="/entities", tags=["Entities"])
     app.include_router(SearchRouter, prefix="/search", tags=["Search"])
 
-    client: ParserClient = ParserClient()
     yield State(client=client)
 
 
