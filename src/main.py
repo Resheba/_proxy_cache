@@ -32,8 +32,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[State]:
         await session.commit()
     
     from src.router import PaserRouter, SearchRouter, MvsRouter
-    app.include_router(PaserRouter, prefix="/data", tags=["Database"])
-    app.include_router(MvsRouter, prefix="/entities", tags=["Entities"])
+    app.include_router(PaserRouter, prefix="/data")
+    app.include_router(MvsRouter, prefix="/entities")
     app.include_router(SearchRouter, prefix="/search", tags=["Search"])
 
     yield State(client=client)

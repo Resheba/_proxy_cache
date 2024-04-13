@@ -16,6 +16,7 @@ router = APIRouter()
 
 
 @router.patch("/reset",
+            tags=["Database"],
             response_model=BaseResponse[None],
             summary="Reset database",
             response_model_exclude_none=True,
@@ -30,6 +31,7 @@ async def get(
 
 
 @router.get("/client-columns",
+            tags=["Client"],
             response_model=BaseResponse[list[str]],
             summary="Get client columns",
             response_model_exclude_none=True,
@@ -42,6 +44,7 @@ async def get_client_columns(
 
 
 @router.patch("/client-columns",
+            tags=["Client"],
             response_model=BaseResponse[list[str]],
             summary="Create client columns",
             response_model_exclude_none=True,
@@ -60,6 +63,7 @@ async def create_client_columns(
 
 
 @router.get("/workplace-columns",
+            tags=["Workplace"],
             response_model=BaseResponse[list[str]],
             summary="Get workplace columns",
             response_model_exclude_none=True,
@@ -72,6 +76,7 @@ async def get_workplace_columns(
 
 
 @router.patch("/workplace-columns",
+            tags=["Workplace"],
             response_model=BaseResponse[list[str]],
             summary="Create workplace columns",
             response_model_exclude_none=True,
@@ -89,6 +94,7 @@ async def create_workplace_columns(
 
 
 @router.get("/profession-columns",
+            tags=["Profession"],
             response_model=BaseResponse[list[str]],
             summary="Get profession columns",
             response_model_exclude_none=True,
@@ -101,6 +107,7 @@ async def get_profession_columns(
 
 
 @router.patch("/profession-columns",
+            tags=["Profession"],
             response_model=BaseResponse[list[str]],
             summary="Create profession columns",
             response_model_exclude_none=True,

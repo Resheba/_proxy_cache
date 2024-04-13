@@ -12,6 +12,7 @@ router = APIRouter()
 
 
 @router.get("/clients",
+    tags=["Client"],
     response_model=BaseResponse[list[dict]],
     response_model_exclude_none=True,
 )
@@ -27,6 +28,7 @@ async def get_clients(
 
 
 @router.get("/workplace",
+    tags=["Workplace"],
     response_model=BaseResponse[list[dict]],
     response_model_exclude_none=True,
 )
@@ -42,6 +44,7 @@ async def get_workplace(
 
 
 @router.get("/professions",
+    tags=["Profession"],
     response_model=BaseResponse[list[dict]],
     response_model_exclude_none=True,
 )

@@ -39,7 +39,7 @@ async def search(
 
 
 @router.post("",
-    # response_model=BaseResponse[list[dict]],
+    response_model=BaseResponse[list[dict]],
     summary="Search by form-data",
     )
 async def search_by_form_data(
