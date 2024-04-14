@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[State]:
             await reset_db(client=client)
 
         from src.router.database.models import WorkPlaceColumnORM, ClientColumnORM, ProfessionColumnORM
-        await session.run_sync(lambda sess: manager.Base.metadata.create_all(sess.connection()))
+        await session.run_sync(lambda sess: manager.Base.metadata.create_all(sess.connection(), tables=[WorkPlaceColumnORM.__table__, ClientColumnORM.__table__, ProfessionColumnORM.__table__]))
 
         await session.commit()
     
